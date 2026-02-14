@@ -1,0 +1,198 @@
+{
+  "logo_path": "company_logo.jpeg",
+  "carrox_logo_path": "carrox_logo.png",
+  
+  "supplier": {
+    "name": "Name of Supplier",
+    "address_line1": "14 Mxxxn Sxxe xxx Dublin",
+    "address_line2": "nn, D00 0028 Ireland",
+    "email": "email@supplier.ie",
+    "phone": "+353 1 999999",
+    "vat_no": "9999999XX",
+    "vrt_tan": "99999"
+  },
+  
+  "invoice": {
+    "number": "CX-WM0025",
+    "ref_po": "25028",
+    "date": "23/12/2025"
+  },
+  
+  "customer": {
+    "name": "name of contact customer",
+    "address": "address of customer Ireland",
+    "email": "email@ofcustomer.ie"
+  },
+  
+  "shipping": {
+    "due_date": "dd/mm/yyyy",
+    "items_count": "77 Used Cars",
+    "from_to": "Name of sender",
+    "shipped_via": "MSC & MOL",
+    "irl_eta": "dd/mm/yyyy",
+    "irl_delivery": "delivery note"
+  },
+  
+  "payment": {
+    "bank_name": "Name of Bank",
+    "bank_address": "Address of Bank",
+    "iban": "[IBAN NUMBER]",
+    "in_favor_of": "[Account Name]",
+    "phone": "+(353) 01-6713011"
+  },
+  
+  "summary": {
+    "total_cif": "€694,021.85",
+    "yen_equivalent": "¥121,722,272",
+    "fx_rate": "175.3868",
+    "cct": "€23,772.60",
+    "clearance": "€4,620.00",
+    "port_handling": "€6,295.00",
+    "devanning": "€16,680.00",
+    "broker_fees": "€39,715.00",
+    "total_excluding_vat": "€785,104.45",
+    "vat_23": "€178,072.77",
+    "total_fully_delivered": "€963,177.23"
+  },
+  
+  "balance": {
+    "total_cif_77_cars": "¥121,722,272",
+    "order_deposit": "¥8,538,192",
+    "yen_fx_forward": "¥113,184,080",
+    "due_euro_equivalent": "€644,720.01",
+    "fx_forward_rate": "175.5554",
+    "due_import_costs": "€269,155.37",
+    "total_balance_due": "€913,875.39",
+    "paid_to_date": "€447,642.38",
+    "paid_date": "22/12/2025",
+    "remaining_due": "€466,233.01"
+  },
+  
+  "items": [
+    {
+      "make": "TOYOTA",
+      "model_code": "DAA-ZYX10",
+      "model": "C-HR HYBRID",
+      "year": "2017",
+      "color": "silver",
+      "month": "4",
+      "chassis_no": "Chassis number of car",
+      "engine_no": "¥99999",
+      "car_cost": "",
+      "odometer": "8888",
+      "insurance": "¥5,000",
+      "freight": "¥179,936",
+      "total_cif_yen": "¥1,438,036",
+      "cif_euro": "€8,199.23",
+      "cct": "€106.59",
+      "clearance": "€60.00",
+      "port_handling": "€88.00",
+      "devanning": "€300.00",
+      "broker_fees": "€495.00",
+      "vat": "€2,093.19",
+      "total": "€11,342.00",
+      "delivery_location": "[Delivery location]"
+    },
+    {
+      "make": "TOYOTA",
+      "model_code": "DAA-ZYX10",
+      "model": "C-HR HYBRID",
+      "year": "2019",
+      "color": "black",
+      "month": "3",
+      "chassis_no": "Chassis number of car",
+      "engine_no": "",
+      "car_cost": "¥1,496,100",
+      "odometer": "83,000",
+      "insurance": "¥5,000",
+      "freight": "¥179,936",
+      "total_cif_yen": "¥1,681,036",
+      "cif_euro": "€9,584.73",
+      "cct": "€124.60",
+      "clearance": "€60.00",
+      "port_handling": "€88.00",
+      "devanning": "€300.00",
+      "broker_fees": "€495.00",
+      "vat": "€2,416.00",
+      "total": "€13,068.33",
+      "delivery_location": "[Delivery location]"
+    },
+    {
+      "make": "HONDA",
+      "model_code": "6AA-GR3",
+      "model": "FIT HYBRID",
+      "year": "2020",
+      "color": "silver",
+      "month": "11",
+      "chassis_no": "Chassis number of Car",
+      "engine_no": "",
+      "car_cost": "¥888,100",
+      "odometer": "88,000",
+      "insurance": "¥5,000",
+      "freight": "¥179,936",
+      "total_cif_yen": "¥1,073,036",
+      "cif_euro": "€6,118.11",
+      "cct": "€79.54",
+      "clearance": "€60.00",
+      "port_handling": "€88.00",
+      "devanning": "€300.00",
+      "broker_fees": "€495.00",
+      "vat": "€1,608.31",
+      "total": "€8,748.96",
+      "delivery_location": "[Delivery location]"
+    },
+    {
+      "make": "NISSAN",
+      "model_code": "ZE1",
+      "model": "LEAF",
+      "year": "2021",
+      "color": "white",
+      "month": "6",
+      "chassis_no": "Chassis number 4",
+      "engine_no": "",
+      "car_cost": "¥1,200,000",
+      "odometer": "45,000",
+      "insurance": "¥5,000",
+      "freight": "¥179,936",
+      "total_cif_yen": "¥1,384,936",
+      "cif_euro": "€7,895.23",
+      "cct": "€102.64",
+      "clearance": "€60.00",
+      "port_handling": "€88.00",
+      "devanning": "€300.00",
+      "broker_fees": "€495.00",
+      "vat": "€2,016.07",
+      "total": "€10,956.94",
+      "delivery_location": "[Delivery location]"
+    },
+    {
+      "make": "MAZDA",
+      "model_code": "DBA-DJ5FS",
+      "model": "DEMIO",
+      "year": "2018",
+      "color": "blue",
+      "month": "9",
+      "chassis_no": "Chassis number 5",
+      "engine_no": "",
+      "car_cost": "¥750,000",
+      "odometer": "62,000",
+      "insurance": "¥5,000",
+      "freight": "¥179,936",
+      "total_cif_yen": "¥934,936",
+      "cif_euro": "€5,332.45",
+      "cct": "€69.32",
+      "clearance": "€60.00",
+      "port_handling": "€88.00",
+      "devanning": "€300.00",
+      "broker_fees": "€495.00",
+      "vat": "€1,361.51",
+      "total": "€7,706.28",
+      "delivery_location": "[Delivery location]"
+    }
+  ],
+  
+  "pagination": {
+    "current_page": 1,
+    "total_pages": 14
+  }
+}

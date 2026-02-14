@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Invoice - CX-WM0025</title>
+    <style>
+        /* PDF Page Settings - WeasyPrint Native Pagination */
+        @page {
+            size: A4;
+            margin: 15mm;
+
+            /* Footer with Page Numbers */
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: Arial, sans-serif;
+                font-size: 10px;
+                color: #999;
+            }
+        }
+
+        /* Specific settings for the first page if needed */
+        @page: first {
+            /* Optional: Different margins or headers for first page */
+            margin-top: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            line-height: 1.5;
+            color: #333;
+            background: white;
+        }
+
+        /* Running Header for Item Pages */
+        .running-header {
+            position: running(header);
+            width: 100%;
+            text-align: right;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+            background: white;
+        }
+
+        /* Apply running header starting from 2nd page area */
+        .items-section {
+            page-break-before: always;
+        }
+
+        /* To show header on pages where .items-section flows */
+        @page {
+            @top-center {
+                content: element(header);
+            }
+        }
+
+        /* Hide running header on first page */
+        @page: first {
+            @top-center {
+                content: none;
+            }
+        }
+
+        /* --- Page 1 Styles (Summary) --- */
+
+        .page-1-wrapper {
+            position: relative;
+            /* Ensure it fits or breaks cleanly */
+        }
+
+        .header {
+            background: linear-gradient(135deg, #b0e8e6 0%, #8ed9d6 100%);
+            padding: 25px 40px 70px 40px;
+            margin: -15mm -15mm 0 -15mm;
+            /* Compensate for @page margin on first page */
+            position: relative;
+        }
+
+        .logo-container {
+            display: inline-block;
+        }
+
+        .logo-img {
+            height: 80px;
+            width: auto;
+            display: block;
+        }
+
+        .invoice-title {
+            position: absolute;
+            top: 25px;
+            right: 40px;
+            font-size: 42px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 0 25px;
+            margin-top: -50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .supplier-info,
+        .customer-info {
+            background: white;
+            padding: 18px 20px;
+            width: 48%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-left: 3px solid #7dd3d0;
+        }
+
+        .info-row {
+            margin: 4px 0;
+            font-size: 11px;
+        }
+
+        .label {
+            font-weight: 600;
+            display: inline-block;
+            min-width: 110px;
+            color: #555;
+        }
+
+        .link {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .content-section {
+            padding: 25px 25px;
+        }
+
+        .two-column {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .column-left {
+            width: 45%;
+        }
+
+        .column-right {
+            width: 52%;
+        }
+
+        .payment-box {
+            background: #f8f8f8;
+            padding: 18px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .payment-title {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .summary-section {
+            background: #f8f8f8;
+            padding: 18px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .summary-title {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 11px;
+        }
+
+        .summary-row.bold {
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .summary-row.indent {
+            padding-left: 15px;
+        }
+
+        .summary-row.total {
+            font-weight: bold;
+            border-top: 2px solid #333;
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        .balance-section {
+            margin-top: 25px;
+        }
+
+        .balance-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 11px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .balance-row.highlight {
+            background: #f0f0f0;
+            padding: 10px 15px;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            margin: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .balance-row.final {
+            font-weight: bold;
+            font-size: 13px;
+            border-top: 2px solid #333;
+            border-bottom: 2px solid #333;
+            padding: 10px 0;
+            margin-top: 10px;
+        }
+
+        .balance-row.remaining {
+            font-weight: bold;
+            font-size: 13px;
+            color: #d9534f;
+        }
+
+        /* --- Item Table Styles --- */
+
+        .item-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin-top: 10px;
+        }
+
+        .item-table thead {
+            background: #f5f5f5;
+            display: table-header-group;
+            /* Repeat header on new pages */
+        }
+
+        .item-table tr {
+            page-break-inside: avoid;
+            /* Try to keep rows together */
+        }
+
+        .item-table th {
+            padding: 8px 6px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 9px;
+            border: 1px solid #ddd;
+        }
+
+        .item-row-main td {
+            padding: 8px 6px;
+            vertical-align: top;
+            border: 1px solid #ddd;
+        }
+
+        .item-number {
+            font-weight: bold;
+            font-size: 16px;
+            padding-right: 8px;
+        }
+
+        .item-row-cif td {
+            padding: 6px 6px;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            font-weight: 600;
+        }
+
+        .item-row-origin td {
+            padding: 6px 6px;
+            font-size: 8px;
+            font-style: italic;
+            color: #666;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        .costs-section {
+            padding: 8px 6px;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        .cost-line {
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            padding: 2px 0;
+            font-size: 9px;
+        }
+
+        .cost-line .label-cost {
+            text-align: right;
+            min-width: 200px;
+        }
+
+        .cost-line .value-cost {
+            min-width: 80px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .item-row-total td {
+            padding: 10px 6px;
+            background: linear-gradient(135deg, #8ed9d6 0%, #7dd3d0 100%);
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+            border: 1px solid #7dd3d0;
+        }
+
+        .total-left {
+            text-align: left;
+        }
+
+        .total-right {
+            text-align: right;
+        }
+
+        .logo-footer {
+            text-align: left;
+            padding: 30px 40px;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+            page-break-inside: avoid;
+        }
+
+        .carrox-logo-img {
+            height: 40px;
+            width: auto;
+        }
+
+        /* Running Header Content */
+        .page-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header-content .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .invoice-details-header {
+            text-align: left;
+            font-size: 11px;
+        }
+
+        .invoice-details-header .invoice-no {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Hidden Running Header for Page 2+ -->
+    <div class="running-header">
+        <div class="page-header-content">
+            <div class="invoice-details-header">
+                <div class="invoice-no">Invoice No: CX-WM0025</div>
+                <div>Ref: 25028</div>
+            </div>
+            <div class="title">Invoice</div>
+        </div>
+    </div>
+
+    <!-- PAGE 1 - SUMMARY PAGE -->
+    <div class="page-1-wrapper">
+        <div class="header">
+            <div class="logo-container">
+                <img src="company_logo.jpeg" alt="Company Logo" class="logo-img">
+            </div>
+            <div class="invoice-title">Sales Invoice</div>
+        </div>
+
+        <div class="info-section">
+            <div class="supplier-info">
+                <div style="font-weight: bold; font-size: 13px; margin-bottom: 8px;">Name of Supplier</div>
+                <div style="line-height: 1.6;">14 Mxxxn Sxxe xxx Dublin<br>nn, D00 0028 Ireland</div>
+                <div style="margin-top: 10px;"><a href="mailto:email@supplier.ie" class="link">email@supplier.ie</a></div>
+                <div style="margin-top: 10px;">+353 1 999999</div>
+                <div style="margin-top: 12px;">
+                    <div class="info-row"><span class="label">VAT No :</span> 9999999XX</div>
+                    <div class="info-row"><span class="label">VRT TAN :</span> 99999</div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div class="info-row"><span class="label">Invoice No:</span> CX-WM0025</div>
+                    <div class="info-row"><span class="label">Ref PO#:</span> 25028</div>
+                </div>
+                <div style="margin-top: 12px;">
+                    <div class="info-row"><span class="label">Invoice Date:</span> 23/12/2025</div>
+                </div>
+            </div>
+
+            <div class="customer-info">
+                <div style="font-weight: bold; font-size: 13px; margin-bottom: 8px;">To: name of contact customer</div>
+                <div style="line-height: 1.6;">address of customer Ireland</div>
+                <div style="margin-top: 10px;"><a href="mailto:email@ofcustomer.ie" class="link">email@ofcustomer.ie</a></div>
+
+                <div style="margin-top: 18px;">
+                    <div class="info-row"><span class="label">Due Date:</span> dd/mm/yyyy</div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <div class="info-row"><span class="label">Items:</span> 77 Used Cars</div>
+                    <div class="info-row"><span class="label">From / To :</span> Name of sender</div>
+                    <div class="info-row"><span class="label">Shipped via:</span> MSC &amp; MOL</div>
+                    <div class="info-row"><span class="label">IRL Eta:</span> dd/mm/yyyy</div>
+                    <div class="info-row"><span class="label">IRL Delivery:</span> delivery note</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="two-column">
+                <div class="column-left">
+                    <div class="payment-box">
+                        <div class="payment-title">Payment Details *</div>
+                        <div class="info-row"><span class="label">BANK NAME:</span> Name of Bank</div>
+                        <div class="info-row"><span class="label">ADDRESS:</span> Address of Bank</div>
+                        <div class="info-row"><span class="label">IBAN:</span> [IBAN NUMBER]</div>
+                        <div class="info-row"><span class="label">IN FAVOR OF:</span> [Account Name]</div>
+                        <div style="margin-top: 15px; font-size: 10px; color: #666;">
+                            * Please include above invoice number as payment reference
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column-right">
+                    <div class="summary-section">
+                        <div class="summary-title">Invoice Summary</div>
+                        <div class="summary-row bold">
+                            <span>Total CIF Cost (Cars & Insurance & Freight)</span>
+                            <span>€694,021.85</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>YEN equivalent (@Blended Fx rate 175.3868)</span>
+                            <span>¥121,722,272</span>
+                        </div>
+                        <div style="height: 15px;"></div>
+                        <div class="summary-row indent">
+                            <span>CCT</span>
+                            <span>€23,772.60</span>
+                        </div>
+                        <div class="summary-row indent">
+                            <span>C+E Clearance</span>
+                            <span>€4,620.00</span>
+                        </div>
+                        <div class="summary-row bold indent" style="margin-top: 5px;">
+                            <span>Import Costs SubTotal</span>
+                            <span></span>
+                        </div>
+                        <div class="summary-row indent">
+                            <span>Port Handling</span>
+                            <span>€6,295.00</span>
+                        </div>
+                        <div class="summary-row indent">
+                            <span>IRL DeVanning and Delivery</span>
+                            <span>€16,680.00</span>
+                        </div>
+                        <div class="summary-row indent">
+                            <span>AFC & CarRox Broker Fees</span>
+                            <span>€39,715.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>TOTAL (Excluding VAT)</span>
+                            <span>€785,104.45</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>23% VAT (Exc. Clearance and Port Handling)</span>
+                            <span>€178,072.77</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>TOTAL (Fully Delivered Cost)</span>
+                            <span>€963,177.23</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="balance-section">
+                <div class="balance-row">
+                    <span>Total CIF cost 77 Used Cars</span>
+                    <span>¥121,722,272</span>
+                </div>
+                <div class="balance-row">
+                    <span>Order 16 deposit 1</span>
+                    <span>¥8,538,192</span>
+                </div>
+                <div class="balance-row">
+                    <span>Yen FX forward</span>
+                    <span>¥113,184,080</span>
+                </div>
+                <div style="height: 12px;"></div>
+                <div class="balance-row highlight">
+                    <span>DUE - Euro equivalent (@ Fx forward 175.5554)</span>
+                    <span>€644,720.01</span>
+                </div>
+                <div class="balance-row highlight">
+                    <span>DUE - Import Costs (Incl. VAT)</span>
+                    <span>€269,155.37</span>
+                </div>
+                <div style="height: 12px;"></div>
+                <div class="balance-row final">
+                    <span>TOTAL BALANCE DUE*</span>
+                    <span>€913,875.39</span>
+                </div>
+                <div class="balance-row">
+                    <span>Paid to date** 22/12/2025</span>
+                    <span>€447,642.38</span>
+                </div>
+                <div class="balance-row remaining">
+                    <span>Remaining due</span>
+                    <span>€466,233.01</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGES 2+ - ITEM DETAILS (Continuous Flow) -->
+    <div class="items-section">
+        <table class="item-table">
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Make / Model Code</th>
+                    <th style="width: 12%;">Model / Year</th>
+                    <th style="width: 12%;">Ext Color / Month</th>
+                    <th style="width: 15%;">Chassis No. / Engine No.</th>
+                    <th style="width: 12%;">Car Cost<br>Odometer (km)</th>
+                    <th style="width: 10%;">Insurance</th>
+                    <th style="width: 10%;">Freight</th>
+                    <th style="width: 14%;">Total CIF</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <!-- ITEM 1 -->
+                <tr class="item-row-main">
+                    <td><span class="item-number">1</span> TOYOTA<br>DAA-ZYX10</td>
+                    <td>C-HR HYBRID<br>2017</td>
+                    <td>silver<br>4</td>
+                    <td>Chassis number of car<br>¥99999</td>
+                    <td><br>8888</td>
+                    <td>¥5,000</td>
+                    <td>¥179,936</td>
+                    <td>¥1,438,036</td>
+                </tr>
+                <tr class="item-row-cif">
+                    <td colspan="7">CIF (Car Cost + Ins + Freight)</td>
+                    <td style="text-align: right;">€8,199.23</td>
+                </tr>
+                <tr class="item-row-origin">
+                    <td colspan="8"></td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="costs-section">
+                        <div class="cost-line">
+                            <span class="label-cost">CCT</span>
+                            <span class="value-cost">€106.59</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">C&E Clearance</span>
+                            <span class="value-cost">€60.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">IRL Port Handling</span>
+                            <span class="value-cost">€88.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">IRL DeVanning & Delivery</span>
+                            <span class="value-cost">€300.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">AFC & CarRox Broker Fees</span>
+                            <span class="value-cost">€495.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">23% VAT (Excl. Clearance & Port-Handling)</span>
+                            <span class="value-cost">€2,093.19</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="item-row-total">
+                    <td colspan="7" class="total-left">[Delivery location]</td>
+                    <td class="total-right">TOTAL €11,342.00</td>
+                </tr>
+                <!-- Spacer Row -->
+                <tr>
+                    <td colspan="8" style="border: none; height: 10px;"></td>
+                </tr>
+                
+                <!-- ITEM 2 -->
+                <tr class="item-row-main">
+                    <td><span class="item-number">2</span> TOYOTA<br>DAA-ZYX10</td>
+                    <td>C-HR HYBRID<br>2019</td>
+                    <td>black<br>3</td>
+                    <td>Chassis number of car</td>
+                    <td>¥1,496,100<br>83,000</td>
+                    <td>¥5,000</td>
+                    <td>¥179,936</td>
+                    <td>¥1,681,036</td>
+                </tr>
+                <tr class="item-row-cif">
+                    <td colspan="7">CIF (Car Cost + Ins + Freight)</td>
+                    <td style="text-align: right;">€9,584.73</td>
+                </tr>
+                <tr class="item-row-origin">
+                    <td colspan="8"></td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="costs-section">
+                        <div class="cost-line">
+                            <span class="label-cost">CCT</span>
+                            <span class="value-cost">€124.60</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">C&E Clearance</span>
+                            <span class="value-cost">€60.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">IRL Port Handling</span>
+                            <span class="value-cost">€88.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">IRL DeVanning & Delivery</span>
+                            <span class="value-cost">€300.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">AFC & CarRox Broker Fees</span>
+                            <span class="value-cost">€495.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">23% VAT (Excl. Clearance & Port-Handling)</span>
+                            <span class="value-cost">€2,416.00</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="item-row-total">
+                    <td colspan="7" class="total-left">[Delivery location]</td>
+                    <td class="total-right">TOTAL €13,068.33</td>
+                </tr>
+                <!-- Spacer Row -->
+                <tr>
+                    <td colspan="8" style="border: none; height: 10px;"></td>
+                </tr>
+                
+                <!-- ITEM 3 -->
+                <tr class="item-row-main">
+                    <td><span class="item-number">3</span> HONDA<br>6AA-GR3</td>
+                    <td>FIT HYBRID<br>2020</td>
+                    <td>silver<br>11</td>
+                    <td>Chassis number of Car</td>
+                    <td>¥888,100<br>88,000</td>
+                    <td>¥5,000</td>
+                    <td>¥179,936</td>
+                    <td>¥1,073,036</td>
+                </tr>
+                <tr class="item-row-cif">
+                    <td colspan="7">CIF (Car Cost + Ins + Freight)</td>
+                    <td style="text-align: right;">€6,118.11</td>
+                </tr>
+                <tr class="item-row-origin">
+                    <td colspan="8"></td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="costs-section">
+                        <div class="cost-line">
+                            <span class="label-cost">CCT</span>
+                            <span class="value-cost">€79.54</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">C&E Clearance</span>
+                            <span class="value-cost">€60.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">IRL Port Handling</span>
+                            <span class="value-cost">€88.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">IRL DeVanning & Delivery</span>
+                            <span class="value-cost">€300.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">AFC & CarRox Broker Fees</span>
+                            <span class="value-cost">€495.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">23% VAT (Excl. Clearance & Port-Handling)</span>
+                            <span class="value-cost">€1,608.31</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="item-row-total">
+                    <td colspan="7" class="total-left">[Delivery location]</td>
+                    <td class="total-right">TOTAL €8,748.96</td>
+                </tr>
+                <!-- Spacer Row -->
+                <tr>
+                    <td colspan="8" style="border: none; height: 10px;"></td>
+                </tr>
+                
+                <!-- ITEM 4 -->
+                <tr class="item-row-main">
+                    <td><span class="item-number">4</span> NISSAN<br>ZE1</td>
+                    <td>LEAF<br>2021</td>
+                    <td>white<br>6</td>
+                    <td>Chassis number 4</td>
+                    <td>¥1,200,000<br>45,000</td>
+                    <td>¥5,000</td>
+                    <td>¥179,936</td>
+                    <td>¥1,384,936</td>
+                </tr>
+                <tr class="item-row-cif">
+                    <td colspan="7">CIF (Car Cost + Ins + Freight)</td>
+                    <td style="text-align: right;">€7,895.23</td>
+                </tr>
+                <tr class="item-row-origin">
+                    <td colspan="8"></td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="costs-section">
+                        <div class="cost-line">
+                            <span class="label-cost">CCT</span>
+                            <span class="value-cost">€102.64</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">C&E Clearance</span>
+                            <span class="value-cost">€60.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">IRL Port Handling</span>
+                            <span class="value-cost">€88.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">IRL DeVanning & Delivery</span>
+                            <span class="value-cost">€300.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">AFC & CarRox Broker Fees</span>
+                            <span class="value-cost">€495.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">23% VAT (Excl. Clearance & Port-Handling)</span>
+                            <span class="value-cost">€2,016.07</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="item-row-total">
+                    <td colspan="7" class="total-left">[Delivery location]</td>
+                    <td class="total-right">TOTAL €10,956.94</td>
+                </tr>
+                <!-- Spacer Row -->
+                <tr>
+                    <td colspan="8" style="border: none; height: 10px;"></td>
+                </tr>
+                
+                <!-- ITEM 5 -->
+                <tr class="item-row-main">
+                    <td><span class="item-number">5</span> MAZDA<br>DBA-DJ5FS</td>
+                    <td>DEMIO<br>2018</td>
+                    <td>blue<br>9</td>
+                    <td>Chassis number 5</td>
+                    <td>¥750,000<br>62,000</td>
+                    <td>¥5,000</td>
+                    <td>¥179,936</td>
+                    <td>¥934,936</td>
+                </tr>
+                <tr class="item-row-cif">
+                    <td colspan="7">CIF (Car Cost + Ins + Freight)</td>
+                    <td style="text-align: right;">€5,332.45</td>
+                </tr>
+                <tr class="item-row-origin">
+                    <td colspan="8"></td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="costs-section">
+                        <div class="cost-line">
+                            <span class="label-cost">CCT</span>
+                            <span class="value-cost">€69.32</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">C&E Clearance</span>
+                            <span class="value-cost">€60.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">IRL Port Handling</span>
+                            <span class="value-cost">€88.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">IRL DeVanning & Delivery</span>
+                            <span class="value-cost">€300.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">AFC & CarRox Broker Fees</span>
+                            <span class="value-cost">€495.00</span>
+                        </div>
+                        <div class="cost-line">
+                            <span class="label-cost">23% VAT (Excl. Clearance & Port-Handling)</span>
+                            <span class="value-cost">€1,361.51</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="item-row-total">
+                    <td colspan="7" class="total-left">[Delivery location]</td>
+                    <td class="total-right">TOTAL €7,706.28</td>
+                </tr>
+                <!-- Spacer Row -->
+                <tr>
+                    <td colspan="8" style="border: none; height: 10px;"></td>
+                </tr>
+                
+            </tbody>
+        </table>
+
+        <div class="logo-footer">
+            <img src="carrox_logo.png" alt="CarRox Logo" class="carrox-logo-img">
+        </div>
+    </div>
+
+</body>
+
+</html>
